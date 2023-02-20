@@ -1,16 +1,20 @@
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
+now = datetime.now(timezone.utc)
+yesterday = now - timedelta(hours=24)
+
 api_date_format = '%Y-%m-%dT%H:%M:%S%z'
+api_date_format_nozulu = '%Y-%m-%dT%H:%M:%S'
 
 api_source = "https://environment.data.gov.uk/flood-monitoring/id/stations/"
 station = "1491TH"
-date = "2023-02-19T02:40:00Z"
-readings_request = "/readings?since="+date
+start_date = yesterday.strftime(api_date_format_nozulu)+'Z' # Adding Z automatically was tricky. Knowing the syntax for the API this is more reliable
+readings_request = "/readings?since="+start_date
 
 full_source = api_source+station+readings_request
 
