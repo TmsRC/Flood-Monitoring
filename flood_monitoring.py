@@ -53,11 +53,14 @@ def list_stations(stations_response):
 
 def run_station_finder_help():
 
-    print('\nStation finder help -------------------------')
-    print('Stations can be queried by LABEL, by RIVER, by RLOIid')
-    query_type = input('Select query type:\t')
 
     if len(sys.argv)==1: # Allow for user to input station code directly
+        
+        
+        print('\nStation finder help -------------------------')
+        print('Stations can be queried by LABEL, by RIVER, by RLOIid')
+        query_type = input('Select query type:\t')
+        
         query_source = get_station_query_source(query_type)
         stations_response = requests.get(query_source)
 
