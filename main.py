@@ -1,9 +1,15 @@
+import sys
 import requests
 from datetime import datetime, timedelta, timezone
 
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+
+if len(sys.argv)==2:
+    argument = sys.argv[1]
+else:
+    argument = input('Input station code:\t')
 
 now = datetime.now(timezone.utc)
 yesterday = now - timedelta(hours=24)
@@ -16,6 +22,7 @@ station = "1491TH"
 start_date = yesterday.strftime(api_date_format_nozulu)+'Z' # Adding Z automatically was tricky. Knowing the syntax for the API this is more reliable
 readings_request = "/readings?since="+start_date
 
+station = argument
 full_source = api_source+station+readings_request
 
 content_response = requests.get(full_source)
@@ -23,7 +30,7 @@ content_response = requests.get(full_source)
 response_status = content_response.status_code
 response_json = content_response.json()
 
-print(response_status)
+# print(response_status)
 
 all_measurements = {}
 dates = {}
@@ -43,14 +50,17 @@ for key in all_measurements.keys():
     sort_args = np.argsort(dates[key]) # Gets correct order of the elements
     dates[key] = np.array(dates[key])[sort_args] # Orders the dates
     all_measurements[key] = np.array(all_measurements[key])[sort_args]
-    print(dates[key][::4])
     
 keys = all_measurements.keys()
 display_date_format = "%b-%d %H:%M"
 date_form = mdates.DateFormatter(display_date_format)
-print('Creating {} graphs'.format(len(keys)))
 
-
+if len(keys) == 0:
+    print('Station not found or data not available')
+else:
+    print('Creating {} graphs:'.format(len(keys)))
+    for key in keys:
+        print('\t {}'.format(key))
 
     
 for key in keys:
@@ -68,14 +78,17 @@ for key in keys:
     fig = plt.subplot(211)
     plt.plot(x,y)
     plt.xticks(x[::4],rotation=60,ha='right')
+    ylabel = ''.join(key.split('-')[1:])
+    plt.ylabel(ylabel)
     plt.grid()
     fig.axes.get_xaxis().set_major_formatter(date_form)
     
     
     fig = plt.subplot(212)
-    plt.table(cellText = table_text,rowLabels=['Measurement'],colLabels=table_cols,loc='center')
+    plt.table(cellText = table_text,rowLabels=['Measurement'],rowLoc='center',colLabels=table_cols,loc='center')
     plt.box(on=None)
     fig.axes.get_xaxis().set_visible(False)
     fig.axes.get_yaxis().set_visible(False)
     
+    plt.suptitle('Station '+station)
     plt.show()
