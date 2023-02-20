@@ -2,14 +2,33 @@ import sys
 import requests
 from datetime import datetime, timedelta, timezone
 
-import numpy as np
+import numpy as np # For easy sorting of dates
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+
+print('Station finder help -------------------------')
+print('Stations can be queried by LABEL, by RIVER, by RLOIid')
+query_type = input('Select query type:\t')
+
+if query_type == 'LABEL':
+    q = input('Type label or portion of label:\t')
+elif query_type == 'RIVER':
+    q = input('Type exact river name:\t')
+elif query_type == 'RLOIid':
+    q = input('Type exact RLOIid:\t')
+else:
+    print('Invalid query type')
+
+stations_response = requests.get('https://environment.data.gov.uk/flood-monitoring/id/stations?_limit=100')
+
+print('Station name:','stationReference')
+for station in stations_response.json()['items']:
+    print('\"'+station['label']+'\":',station['stationReference'])
 
 if len(sys.argv)==2:
     argument = sys.argv[1]
 else:
-    argument = input('Input station code:\t')
+    argument = input('Input station reference:\t')
 
 now = datetime.now(timezone.utc)
 yesterday = now - timedelta(hours=24)
@@ -18,11 +37,11 @@ api_date_format = '%Y-%m-%dT%H:%M:%S%z'
 api_date_format_nozulu = '%Y-%m-%dT%H:%M:%S'
 
 api_source = "https://environment.data.gov.uk/flood-monitoring/id/stations/"
-station = "1491TH"
+station = argument
 start_date = yesterday.strftime(api_date_format_nozulu)+'Z' # Adding Z automatically was tricky. Knowing the syntax for the API this is more reliable
 readings_request = "/readings?since="+start_date
 
-station = argument
+
 full_source = api_source+station+readings_request
 
 content_response = requests.get(full_source)
