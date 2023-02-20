@@ -15,3 +15,9 @@ The stations are inputted by the user using the corresponing station reference a
 After selecting the query type, the user should make the corresponding query, as indicated by the application. The helper tool would then either list all the stations matching the query (if the query is correct), or list a partial list of all available stations.
 
 The user is also able to input the station reference directly as a command line argument in order to skip the station finder altogether. The first command line argument would be taken as the station reference, any other arguments will be ignored.
+
+## Notes on application code
+
+Application code is still mostly lacking appropriate comments and further refactoring. These were ommited due to time constraints, but will be added in due time.
+
+Further changes to the application for a better use experience might be consider in the future.
