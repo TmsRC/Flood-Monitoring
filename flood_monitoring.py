@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 
-# Global constants
+# Global constants --------------------------------------------------------------------------
 
 api_source = 'https://environment.data.gov.uk/flood-monitoring/id/stations'
 api_date_format = '%Y-%m-%dT%H:%M:%S%z'
@@ -15,6 +15,9 @@ api_date_format_nozulu = '%Y-%m-%dT%H:%M:%S'
 display_date_format = "%b-%d %H:%M"
 date_form = mdates.DateFormatter(display_date_format) # For matplotlib
 
+
+
+# Functions ---------------------------------------------------------------------------------
 
 def get_station_query_source(query_type):
 
@@ -167,8 +170,12 @@ def generate_plot(x,y,station):
     
     plt.suptitle('Station '+station)
     plt.show()
-
     
+    return None
+
+
+
+# Execution ----------------------------------------------------------------------------------------------------------
 
 station = run_station_finder_help()
 
